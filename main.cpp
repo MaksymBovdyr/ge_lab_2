@@ -32,8 +32,22 @@ const float velocity_multiplaier = 1.1f; //how much the ball will speed up every
 sf::CircleShape ball;
 sf::RectangleShape paddles[2];
 
+sf::Font font;
+sf::Text text;
+
 void load() {
     ball_velocity = { (is_player_serving ? initial_velocity_x : -initial_velocity_x), initial_velocity_y };
+
+    //Load font
+    font.loadFromFile("../../../../res/fonts/Roboto-VariableFont_wdth,wght.ttf");
+
+	//Set the elements using the font
+    text.setFont(font);
+    text.setCharacterSize(24);
+    text.setFillColor(sf::Color::White);
+	text.setString("Welcome to PONG!");
+    text.setPosition((gameWidth * 0.5f) - (text.getLocalBounds().width * 0.5f), 0);
+
 }
 
 
@@ -69,12 +83,16 @@ void reset() {
     //reset ball velocity
     ball_velocity = { (is_player_serving ? initial_velocity_x : -initial_velocity_x), initial_velocity_y };
 	is_player_serving = !is_player_serving;
+
+    text.setString("Score Reset!");
+    text.setPosition((gameWidth * 0.5f) - (text.getLocalBounds().width * 0.5f), 0);
 }
 
 
 void update(float dt) {
     //handle paddle movement
 
+	//Move player 1 paddle
     float direction = 0.0f;
     if (sf::Keyboard::isKeyPressed(controls[0])) {
         direction--;
@@ -84,6 +102,7 @@ void update(float dt) {
     }
     paddles[0].move(sf::Vector2f(0.f, direction * paddleSpeed * dt));
 
+	//Move player 2 paddle
     float direction2 = 0.0f;
     if (sf::Keyboard::isKeyPressed(controls[2])) {
         direction2--;
@@ -93,6 +112,7 @@ void update(float dt) {
     }
     paddles[1].move(sf::Vector2f(0.f, direction2 * paddleSpeed * dt));
 
+	//keep paddles in bounds
     if (paddles[0].getPosition().y - (paddleSize.y * 0.5) < 0) {
         paddles[0].setPosition(paddles[0].getPosition().x, paddleSize.y * 0.5);
     }
@@ -170,6 +190,7 @@ void render(sf::RenderWindow& window) {
     window.draw(paddles[0]);
 	window.draw(paddles[1]);
 	window.draw(ball);
+	window.draw(text);
 }
 
 
